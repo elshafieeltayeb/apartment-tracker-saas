@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  locale       String    @default("de")
+  timezone     String    @default("Europe/Berlin")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  applications Application[]
+  templates    Template[]
+  devices      Device[]
+  subscription Subscription?
+}
+
+model Application {
+  id             String            @id @default(cuid())
+  userId         String
+  sourcePlatform String
+  listingUrl     String
+  title          String
+  coldRent       Float?
+  utilities      Float?
+  rooms          Float?
+  locationLabel  String?
+  appliedAt      DateTime?
+  channel        String?
+  status         String            @default("interested")
+  notes          String?
+  nextFollowUpAt DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  user   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events ApplicationEvent[]
+}
+
+model ApplicationEvent {
+  id            String   @id @default(cuid())
+  applicationId String
+  type          String
+  payload       String?
+  createdAt     DateTime @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@index([applicationId])
+}
+
+model Template {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  category  String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Device {
+  id         String    @id @default(cuid())
+  userId     String
+  name       String?
+  tokenHash  String
+  tokenHint  String
+  lastSeenAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  userId               String    @unique
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
+  plan                 String    @default("free")
+  status               String    @default("active")
+  currentPeriodEnd     DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
