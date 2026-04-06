@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wohnungs-Tracker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="title">Wohnungs-Tracker</h1>
+      <p class="subtitle">Lokal · MVP</p>
+    </header>
+
+    <div class="actions">
+      <button type="button" id="btn-add-tab" class="btn btn-primary">
+        + Aktuellen Tab speichern
+      </button>
+      <button type="button" id="btn-dashboard" class="btn btn-secondary">
+        Dashboard öffnen
+      </button>
+      <a class="link-settings" id="link-options" href="#">Einstellungen</a>
+    </div>
+
+    <p id="toast" class="toast" hidden role="status"></p>
+
+    <section class="list-section">
+      <h2 class="list-heading">Zuletzt gespeichert</h2>
+      <ul id="app-list" class="app-list"></ul>
+      <p id="empty" class="empty" hidden>Noch keine Einträge.</p>
+    </section>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
